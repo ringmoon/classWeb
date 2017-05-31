@@ -1,0 +1,21 @@
+.carousel-inner>.item>img,
+.carousel-inner>.item>a>img {
+     width: 70%;
+     margin: auto;
+}
+        
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+        
+th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid black;
+}
+        
+footer {
+     background: #aaa;
+     color: white;
+}

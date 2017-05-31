@@ -1,0 +1,152 @@
+body {
+    background-color: #EEFFBB;
+}
+
+.navbar {
+    background-color: #FFBB66;
+}
+
+#navb {
+    background-color: #FFBB66;
+}
+
+.navbar-text {
+    font-family: "微軟正黑體";
+    font-size: 200%;
+    font-weight: bold;
+}
+
+#divcontent {
+    background-color:#FFFFF0;
+    padding-bottom: 60px;
+}
+#menu{
+    	background-color:#F4A460;
+        font-size: 120%;
+        text-align: center;
+     
+}
+.menu{
+    	background-color:#F4A460;
+        font-size: 120%;
+        text-align: center;
+     
+}
+#divleft {
+    background-color:#FFE4C4;
+    border-color: #FFFFF0;
+    border-style: solid;
+    border-width: 20px 0px 0px 10px;
+    border-radius: 20px;
+    padding-top: 0px;
+    padding-bottom: 10px;  
+}
+
+#divleft ul {
+    list-style-image: url("../img/Qpen.png");
+    padding-top: 0%;
+    padding-left: 35%;
+    padding-right: 0%;
+    padding-bottom: 0%;
+}
+
+#divleft p {
+    font-size: 150%;
+    font-weight: bold;
+    font-family: "微軟正黑體";
+}
+
+#divleft a {
+    color: #EE7700;
+}
+
+#divright {
+    background-color:#FFE4C4;
+    border-color: #FFFFF0;
+    border-style: solid;
+    border-width: 20px 12px 0px 10px;
+    border-radius: 20px;
+}
+
+#divright p {
+    text-align:left;
+    font-size: 150%;
+    color: blue;
+}
+
+#divright h1 {
+    font-size:300%;
+    text-align:center;
+    font-weight: bold;
+}
+
+#divright h4 {
+    font-size:200%;
+    text-align:center;
+    font-weight: bold;
+}
+
+#divright .panel {
+
+    background-color: #F4A460;;
+}
+
+.roundedCorners { 
+  width:100%;
+  border: 1px solid #EE7700;
+  border-radius: 20px; 
+  border-spacing: 0;
+}
+
+#divright table th {
+    background-color: #FFCCCC;
+    border: 1px solid #EE7700;
+    padding: 10px; 
+    font-size:130%;
+
+}
+
+#divright table td {
+    background-color: #E0FFFF;
+    border: 1px solid #EE7700;
+    padding: 10px; 
+    
+
+}
+
+#divright pre{
+    background-color: #E0FFFF;
+    font-size:120%;
+}
+
+#divright a{
+    font-size:130%;
+}
+
+#divright form{
+    font-size:150%;
+    font-weight: bold;
+}
+
+#divright input,textarea,select{
+    background:	#E0FFFF;
+}
+
+#divright input:active{
+    background:#FF7F50;
+}
+
+#footer {
+    background-color: #FFBB66;
+    height: 50px;
+    position: relative;
+    margin-top: -50px;
+}
+
+#footer p {
+    padding-top: 20px;
+    padding-bottom: 0px;
+    text-align: center;
+    font-size: 12px;
+}
+
