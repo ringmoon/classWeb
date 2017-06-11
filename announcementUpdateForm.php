@@ -74,14 +74,20 @@
              
              <div class="col-md-9">    
                  <div id="divright">                           
-                     <div id="menu">
-                        <p style="text-align:center;font-size:200%;color:black;font-weight: bold;font-family: '微軟正黑體';">學校公告</p>
-                      </div>             
-                     <div style="margin-left:20px;margin-right:20px">
-                        <div id="announcementTable">
-                            <script>goAnnouncement(1)</script>
-                         </div>                                               
-                      </div>            
+                    <div id="menu">
+                        <p style="text-align:center;font-size:200%;color:black;font-weight: bold;font-family: '微軟正黑體';">公告修改</p>
+                     </div>
+                    <div class='row'>   
+                        <div class="col-md-10 col-md-offset-1">
+                            <br><br>
+                            <form class="form-horizontal" name="createAnnouncementFrom" action="action.php" method="get"><!---->
+                                <? 
+                                displayUpdateAnnouncementForm();
+                                 ?>
+                             </form>
+                        
+                         </div>          
+                     </div>
                   </div>
                  
                  <div id="divright" style="margin-top:5px;" >
@@ -123,7 +129,7 @@
                      </div>
                    </div>   
               </div>     
-              </div>    
+               
          </div>    
      </div>
     <div id="footer">

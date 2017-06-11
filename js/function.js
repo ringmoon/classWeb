@@ -203,3 +203,96 @@ function displayFutureActivityCalendar(id){
         $("#futureCalendar").html(result);
     });
 }
+
+function goUrl(url){
+    window.location=url;
+}
+
+function createPhotoDir(){
+    document.cookie="action="+"createPhotoDir";
+}
+
+function displayImage(id){
+    document.cookie="imageDirID="+id;
+}
+
+function createPhoto(){
+    document.cookie="action="+"createPhoto";
+}
+
+function displayVideo(id){
+    document.cookie="videoDirID="+id;
+}
+
+function createVideo(){
+    document.cookie="action="+"createVideo";
+}
+
+function createVideoDir(){
+     document.cookie="action="+"createVideoDir";
+}
+
+function goAnnouncementForm(id) {
+    document.cookie = "announcementID=" + id;
+}
+
+function goAnnouncement(id) {
+    $("#announcementPage" + getCookie('announcementPage')).removeClass(' active');
+    document.cookie = " announcementPage=" + id;
+    pageID = "#announcementPage" + id;
+    $(pageID).addClass("active");
+    $.get('/announcementTable.php', function(result, statu) {
+        $("#announcementTable").html(result);
+    });
+}
+//------------------------------
+function goAnnouncementCreateForm() {
+    window.location = '/announcementCreateForm.php';
+}
+
+function createAnnouncement() {
+    document.cookie = "action=" + "createAnnouncement";
+}
+
+function deleteAnnouncement() {
+    document.cookie = "action=" + "deleteAnnouncement";
+    window.location = '/action.php';
+}
+
+function goAnnouncementUpdateForm() {
+    window.location = '/announcementUpdateForm.php';
+}
+
+function updateAnnouncement() {
+    document.cookie = "action=" + "updateAnnouncement";
+}
+//---------------------------
+function clearAction(){
+    document.cookie="action="+"cancelUpdate";
+}
+
+function goDiscuss(id){
+    $("#discussPage" + getCookie('discussPage')).removeClass(' active');
+    document.cookie = " discussPage=" + id;
+    pageID = "#discussPage" + id;
+    $(pageID).addClass("active");
+    $.get('/discussTable.php', function(result, statu) {
+        $("#discussTable").html(result);
+    });
+}
+
+function goDiscussCreateForm() {
+    window.location = '/discussCreateForm.php';
+}
+
+function createDiscuss() {
+    document.cookie = "action=" + "createDiscuss";
+}
+
+function goDiscussForm(id) {
+    document.cookie = "discussID=" + id;
+}
+
+function createDiscussMessage() {
+    document.cookie = "action=" + "createDiscussMessage";
+}

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 $serverName="localhost";
 $username="root";
@@ -377,8 +377,8 @@ function displayAuthorityDataTable(){
             }
         }
         $count=$result->num_rows;
-        for($i=7*($authorityDataPage-1);$i<$count&&$i<7*$authorityDataPage;$i++){                            
-            $sql="SELECT * FROM member WHERE memberID = $i+2;";
+        for($i=7*($authorityDataPage-1);$i<$count&&$i<7*$authorityDataPage;$i++){                        
+            $sql="SELECT * FROM member WHERE memberID = {$array[$i]['memberID']};";
             $result=$conn->query($sql);
             $member=$result->fetch_assoc();
             echo "<tr><td style='text-align:center;'>{$array[$i]['memberID']}</td><td style='font-size:120%'> &nbsp;{$member['name']}</td><td style='font-size:120%'>{$array[$i]['memberAccount']}</td><td style='font-size:120%'>{$array[$i]['memberPassword']}</td>
@@ -435,7 +435,7 @@ function insertMember($name,$account,$password){
                  $array[]=$data;                                                
             }
         }
-        $sql="INSERT INTO member(memberID,name,sex,picture,birthday,constellation,skill,interest) VALUES ('{$array[$result2->num_rows-1]['memberID']}','{$name}','','','','','','');";
+        $sql="INSERT INTO member(memberID,name,sex,picture,birthday,constellation,skill,interest) VALUES ('{$array[$result2->num_rows-1]['memberID']}','{$name}','','img/member/picture/0.jpg','','','','');";
         $result3=$conn->query($sql);
         if ($result1&&$result3){
              echo "<script>alert('新增會員成功');window.location = '/authoritySet.php';</script>";
@@ -843,4 +843,467 @@ function displayActivityCalendarPage($type,$rows){
     $conn->close();
 }
 
+function displayImageDir(){
+    $conn=new mysqli($GLOBALS['serverName'], $GLOBALS['username'], $GLOBALS['password'],$GLOBALS['dbName']);
+    if($conn){
+        mysqli_set_charset($conn,"utf8");
+        $sql="SELECT * FROM imagedir;";
+        $result1=$conn->query($sql);
+        $imageDirCount=$result1->num_rows;
+        
+        for ($i=0;$i<(int)($imageDirCount/4)+1;$i++){
+            echo "<div class='row'>";
+            for($j=0;$j<4;$j++){
+                if ($i==(int)($imageDirCount/4)&&$j==($imageDirCount)%4) break;
+                $dir=$result1->fetch_assoc();
+                echo "<div onclick='displayImage({$dir['imageDirID']})' class='col-md-3'><a href='memoryPhoto.php'><img  style='width:100%'src='img/photo.png'></a></img><p style='text-align:center'>{$dir['dirName']}</p></div>";
+            }
+            echo "</div><hr>";
+        }
+    }
+    $conn->close();
+}
+
+function createPhotoDir($dirName){
+    $conn=new mysqli($GLOBALS['serverName'], $GLOBALS['username'], $GLOBALS['password'],$GLOBALS['dbName']);
+    if($conn){
+    mysqli_set_charset($conn,"utf8");
+    $sql="SELECT * FROM imagedir;";
+    $result1=$conn->query($sql);
+    $imageDirCount=$result1->num_rows;
+    $id=$imageDirCount+1;
+    mkdir('img/memory/'.$id);
+    $sql="INSERT INTO imagedir(dirName) VALUES('{$dirName}');";
+    $result2=$conn->query($sql);
+    if ($result2) echo "<script>window.location='memory.php'</script>"; 
+
+    }
+    $conn->close();
+}
+
+function displayImage(){
+    $conn=new mysqli($GLOBALS['serverName'], $GLOBALS['username'], $GLOBALS['password'],$GLOBALS['dbName']);
+    if($conn){
+        $dirID=$_COOKIE['imageDirID'];
+        mysqli_set_charset($conn,"utf8");
+        $sql="SELECT * FROM imagedir WHERE imageDirID={$dirID};";
+        $result=$conn->query($sql);
+        $dir=$result->fetch_assoc();
+        $sql="SELECT * FROM image WHERE imageDirID={$dirID};";
+        $result1=$conn->query($sql);
+        $imageCount=$result1->num_rows;
+        echo "<ol style='background:#FFE4C4;text-align:left;font-size:16px' class='breadcrumb'><li><a href='memory.php'>回憶剪影</a></li>";
+        echo "<li><a href='memoryPhoto.php'>{$dir['dirName']}</a></li></ol>";
+        for ($i=0;$i<(int)($imageCount/4)+1;$i++){
+            echo "<div class='row'>";
+            for($j=0;$j<4;$j++){
+                if ($i==(int)($imageCount/4)&&$j==($imageCount)%4) break;
+                $image=$result1->fetch_assoc();
+                echo "<div class='col-md-3'><img  style='width:100%;height:100%'src='{$image['url']}'></img><p style='text-align:center'>{$image['title']}</p></div>";
+            }
+            echo "</div><hr>";
+        }
+    }
+    $conn->close();
+}
+
+function createPhoto($title){
+    if ($_FILES['file']['name']=="") echo "<script>alert('尚未選擇上傳檔案');window.location='createPhoto.php'</script>";
+    if($_FILES['file']['error']>0) echo "<script>alert('上傳檔案失敗');window.location='createPhoto.php'</script>";
+    $f=explode(".",$_FILES['file']['name']);
+    $type=$f[1];
+    $conn=new mysqli($GLOBALS['serverName'], $GLOBALS['username'], $GLOBALS['password'],$GLOBALS['dbName']);
+    if($conn){
+        $dirID=$_COOKIE['imageDirID'];
+        mysqli_set_charset($conn,"utf8");
+        $sql="SELECT * FROM image WHERE imageDirID={$dirID};";
+        $result1=$conn->query($sql);
+        $count=$result1->num_rows;
+        $id=$count+1;
+        if ($type=="JPG"||$type=="PNG"||$type=="jpg"||$type=="png"){
+            $fileName='img/memory/'.$dirID."/".$id.".".$type;
+            move_uploaded_file($_FILES['file']['tmp_name'],$fileName);//複製檔案      
+            $sql="INSERT INTO image(imageID,imageDirID,title,url,releaseTime) VALUES('',{$dirID},'{$title}','{$fileName}','');";
+            $result2=$conn->query($sql);
+            echo "<script>alert('上傳檔案成功');window.location='memoryPhoto.php'</script>";;
+        }else{
+            echo "<script>alert('上傳檔案失敗');window.location='createPhoto.php'</script>";
+        }
+    }
+    $conn->close();
+}
+
+function displayVideoDir(){
+    $conn=new mysqli($GLOBALS['serverName'], $GLOBALS['username'], $GLOBALS['password'],$GLOBALS['dbName']);
+    if($conn){
+        mysqli_set_charset($conn,"utf8");
+        $sql="SELECT * FROM videodir;";
+        $result1=$conn->query($sql);
+        $videoDirCount=$result1->num_rows;
+        
+        for ($i=0;$i<(int)($videoDirCount/4)+1;$i++){
+            echo "<div class='row'>";
+            for($j=0;$j<4;$j++){
+                if ($i==(int)($videoDirCount/4)&&$j==($videoDirCount)%4) break;
+                $dir=$result1->fetch_assoc();
+                echo "<div onclick='displayVideo({$dir['videoDirID']})' class='col-md-3'><a href='memoryVideo.php'><img  style='width:100%'src='img/video.png'></a></img><p style='text-align:center'>{$dir['dirName']}</p></div>";
+            }
+            echo "</div><hr>";
+        }
+    }
+    $conn->close();
+}
+
+function displayVideo(){
+    $conn=new mysqli($GLOBALS['serverName'], $GLOBALS['username'], $GLOBALS['password'],$GLOBALS['dbName']);
+    if($conn){
+        $dirID=$_COOKIE['videoDirID'];
+        mysqli_set_charset($conn,"utf8");
+        $sql="SELECT * FROM videodir WHERE videoDirID={$dirID};";
+        $result=$conn->query($sql);
+        $dir=$result->fetch_assoc();
+        $sql="SELECT * FROM video WHERE videoDirID={$dirID};";
+        $result1=$conn->query($sql);
+        $videoCount=$result1->num_rows;
+        echo "<ol style='background:#FFE4C4;text-align:left;font-size:16px' class='breadcrumb'><li><a href='memory.php'>回憶剪影</a></li>";
+        echo "<li><a href='memoryVideo.php'>{$dir['dirName']}</a></li></ol>";
+        for ($i=0;$i<(int)($videoCount/2)+1;$i++){
+            echo "<div class='row'>";
+            for($j=0;$j<2;$j++){
+                if ($i==(int)($videoCount/2)&&$j==($videoCount)%2) break;
+                $video=$result1->fetch_assoc();
+                echo "<div class='col-md-6'><iframe width=100% height='250px' src='{$video['url']}'></iframe><p style='text-align:center'>{$video['title']}</p></div>";
+            }
+            echo "</div><hr>";
+        }
+    }
+    $conn->close();
+}
+
+function createVideo($name,$url){
+    $conn=new mysqli($GLOBALS['serverName'], $GLOBALS['username'], $GLOBALS['password'],$GLOBALS['dbName']);
+    if($conn){
+        $dirID=$_COOKIE['videoDirID'];
+        mysqli_set_charset($conn,"utf8");
+        $sql="SELECT * FROM video WHERE videoDirID={$dirID};";
+        $result1=$conn->query($sql);
+        move_uploaded_file($_FILES['file']['tmp_name'],$fileName);//複製檔案      
+        $sql="INSERT INTO video(videoID,videoDirID,title,url,releaseTime) VALUES('',{$dirID},'{$name}','{$url}','');";
+        $result2=$conn->query($sql);
+        echo "<script>alert('上傳影片連結成功');window.location='memoryVideo.php'</script>";;
+    }
+    $conn->close();
+}
+
+function createVideoDir($dirName){
+    $conn=new mysqli($GLOBALS['serverName'], $GLOBALS['username'], $GLOBALS['password'],$GLOBALS['dbName']);
+    if($conn){
+        mysqli_set_charset($conn,"utf8");
+        $sql="SELECT * FROM videodir;";
+        $result1=$conn->query($sql);
+        $videoDirCount=$result1->num_rows;
+        $id=$videoDirCount+1;
+        $sql="INSERT INTO videodir(dirName) VALUES('{$dirName}');";
+        $result2=$conn->query($sql);
+        if ($result2) echo "<script>window.location='memory.php'</script>"; 
+
+    }
+    $conn->close();
+}
+
+
+
+
+/*<--公告-->*/
+function displayAnnouncementTable(){
+    if($_SESSION['memberID']==1) echo "<div style='text-align:right;margin-right:5px;'><button class='btn btn-lg  btn-primary text-center' onClick='goAnnouncementCreateForm()'>新增公告</button></div><p style='font-size:0px'><br></p>";//
+    else echo "<br><br>";
+    echo "<table class='roundedCorners'><tr><th>主題</th><th style='width:100px'>種類</th><th style='width:180px'>發布日期</th></tr>";
+    $conn=new mysqli($GLOBALS['serverName'], $GLOBALS['username'], $GLOBALS['password'],$GLOBALS['dbName']);
+    $array=[];
+    $announcementPage=$_COOKIE['announcementPage'];
+    if($conn){
+        mysqli_set_charset($conn,"utf8");
+        $sql="SELECT * FROM announcement;";
+        $result=$conn->query($sql);
+        if($result->num_rows>0){
+            while($announcement=$result->fetch_assoc()){
+                 $array[]=$announcement;                                                
+            }
+        }
+        for($i=$result->num_rows-1-($announcementPage-1)*7;$i>=0&&$i>=($result->num_rows-($announcementPage-1)*7-7);$i--){                              
+            echo "<tr><td><a onClick='goAnnouncementForm({$array[$i]['announcementID']})' href='announcementForm.php'>{$array[$i]['title']}</a></td><td style='font-size:120%'>{$array[$i]['announcementclass']}</td><td style='font-size:120%'>{$array[$i]['releaseTime']}</td></tr>";         
+        }     
+    }    
+        echo "</table> ";
+        $conn->close();      
+}
+
+function displayAnnouncementPageNumbers(){
+    $announcementPage=$_COOKIE['announcementPage']==null? 1:$_COOKIE['announcementPage'] ;
+    $lastPage=$announcementPage-1>0? $announcementPage-1:1;    
+    echo " <div id='announcementPage'>"             ;
+    echo "<div class='text-center'><ul class='pagination'>";
+    echo "<li><a style='cursor: pointer;'onClick='goAnnouncement({$lastPage})'>&laquo;</a></li>";
+    $conn=new mysqli($GLOBALS['serverName'], $GLOBALS['username'], $GLOBALS['password'],$GLOBALS['dbName']);     
+    if($conn){
+        mysqli_set_charset($conn,"utf8");
+        $sql="SELECT * FROM announcement;";
+        $result=$conn->query($sql);
+        if($result->num_rows>0){
+            for($i=1;$i<=(($result->num_rows-1)/7+1);$i++){
+                $page="announcementPage".$i;
+                $func="goAnnouncement(".$i.")";
+                if ($announcementPage==$i)                              {
+                    echo "<li id='{$page}' class='active'><a style='cursor: pointer;' onClick='{$func}'>{$i}</a></li>";
+                }else{
+                    echo "<li id='{$page}'><a style='cursor: pointer;' onClick='{$func}'>{$i}</a></li>";
+                }                              
+            }
+            $nextPage=$announcementPage+1>$result->num_rows-1/7+1? $announcementPage:$announcementPage+1;
+            echo "<li><a style='cursor: pointer;' onClick='goAnnouncement({$nextPage})'>&raquo;</a></li>";
+            echo "</ul>";
+        }          
+    }
+    echo "</div>";
+    $conn->close();
+}
+
+function displayAnnouncementContent(){
+    $announcementID=$_COOKIE['announcementID'];
+    $conn=new mysqli($GLOBALS['serverName'], $GLOBALS['username'], $GLOBALS['password'],$GLOBALS['dbName']);
+    if($conn){
+        mysqli_set_charset($conn,"utf8");
+        $sql="SELECT * FROM announcement WHERE announcementID= '{$announcementID}';";
+        $result=$conn->query($sql);
+        if($result->num_rows>0){
+            $announcement=$result->fetch_assoc();
+            echo "<br><h4>{$announcement['title']}</h4><br>";
+            if ($_SESSION['memberID']==1){
+                echo "<div style='text-align:right;margin-right:20px'><div style='display:inline'><button onClick='goAnnouncementUpdateForm()' class='btn btn-lg  btn-success text-center' >修改</button>";//
+                echo "&nbsp;<button onClick='deleteAnnouncement()' class='btn btn-lg  btn-danger text-center' >刪除</button></div></div>";//
+            }
+            echo "<div style='margin-left:20px;margin-right:20px'><pre style='white-space:pre-wrap'>{$announcement['content']}</pre>";//
+            echo "<div><a href='index.php'>回上一頁</a>";
+            echo "</div><br><br></div>";
+            
+        }                       
+    }
+    $conn->close();      
+}
+function createAnnouncement(){
+    $conn=new mysqli($GLOBALS['serverName'], $GLOBALS['username'], $GLOBALS['password'],$GLOBALS['dbName']);  
+    $title=$_GET['title'];
+    $class=$_GET['class'];
+    $content=$_GET['content'];
+    $releaseTime=date("Y-m-d H:i:s");
+    if($conn){
+        mysqli_set_charset($conn,"utf8");
+        $sql="INSERT INTO announcement(title,announcementclass,content,releaseTime) VALUES ('{$title}','{$class}','{$content}','{$releaseTime}');";
+        $result=$conn->query($sql);
+        if ($result){
+             echo "<script>alert('新增公告成功');window.location = '/index.php';</script>";
+        }
+    }  
+    $conn->close();
+}
+
+function deleteAnnouncement(){
+    $conn=new mysqli($GLOBALS['serverName'], $GLOBALS['username'], $GLOBALS['password'],$GLOBALS['dbName']);
+    $announcementID=$_COOKIE['announcementID'];
+    if($conn){
+        mysqli_set_charset($conn,"utf8");
+        $sql="DELETE FROM announcement WHERE announcementID={$announcementID};";
+        $result=$conn->query($sql);
+        if ($conn->affected_rows>0){
+            echo "<script>alert('刪除公告成功');window.location = '/index.php';</script>";
+        }
+    }
+    $conn->close();
+}
+
+function displayUpdateAnnouncementForm(){
+    $conn=new mysqli($GLOBALS['serverName'], $GLOBALS['username'], $GLOBALS['password'],$GLOBALS['dbName']);
+    $announcementID=$_COOKIE['announcementID'];
+    if($conn){
+        mysqli_set_charset($conn,"utf8");
+        $sql="SELECT * FROM announcement WHERE announcementID={$announcementID};";
+        $result=$conn->query($sql);
+        $announcement=$result->fetch_assoc();
+        
+        echo "<div class='row'><div class='col-md-8'><label for='title' >公告標題： </label>";
+        echo "<input required type='text' name='title' size=22 value='{$announcement['title']}'><br><br> </div>";
+        echo "<div class='col-md-4'><label for='class'>公告種類：</label><select name='class' ><option value='註冊組'>註冊組</option><option value='總務處'>總務處</option><option value='學生議會'>學生議會</option><option value='電算中心'>電算中心</option></select><br><br></div> </div> ";
+        echo "<div class='row'><div class='col-md-12'><label for='content'>公告內容描述：</label> <textarea required  type='text' name='content' rows='6' cols='53'  Wrap='Soft'>{$announcement['content']}</textarea>";
+        echo "<div class='display:inline'>&nbsp;&nbsp;<button class='btn btn-lg  btn-primary text-center'  type='submit' name='submit' onClick='updateAnnouncement()'>修改公告</button>&nbsp;&nbsp;<button class='btn btn-lg  btn-warning text-center''  type='reset' name='reset'>重設</button>&nbsp;&nbsp;<button class='btn btn-lg  btn-danger text-center' onClick='clearAction()'>取消修改</button> </div> </div></div></form><br>";      
+    }
+    $conn->close();
+}
+
+function updateAnnouncement(){
+    $conn=new mysqli($GLOBALS['serverName'], $GLOBALS['username'], $GLOBALS['password'],$GLOBALS['dbName']);  
+    $title=$_GET['title'];
+    $class=$_GET['class'];
+    $content=$_GET['content'];
+    $releaseTime=date("Y-m-d H:i:s");
+    $announcementID=$_COOKIE['announcementID'];
+    if($conn){
+        mysqli_set_charset($conn,"utf8");
+        $sql="UPDATE announcement SET title='{$title}',announcementclass='{$class}',content='{$content}',releaseTime='{$releaseTime}' WHERE announcementID='{$announcementID}'";
+        $result=$conn->query($sql);
+        if ($conn->affected_rows>0){
+             echo "<script>alert('修改公告成功');window.location = '/announcementForm.php';</script>";
+        }
+    }  
+    $conn->close();
+}
+
+
+function createDiscuss(){
+    $conn=new mysqli($GLOBALS['serverName'], $GLOBALS['username'], $GLOBALS['password'],$GLOBALS['dbName']);  
+    $title=$_GET['title'];
+    $class=$_GET['class'];
+    $content=$_GET['content'];
+    $memberID=$_SESSION['memberID'];
+
+    
+    if($conn){
+        mysqli_set_charset($conn,"utf8");
+        $sql="INSERT INTO discuss(title,discussclass,content,memberID) VALUES ('{$title}','{$class}','{$content}','{$memberID}');";
+        $result=$conn->query($sql);
+        if ($result){
+             echo "<script>alert('新增話題成功');window.location = '/discuss.php';</script>";
+        }
+    }  
+    $conn->close();
+}
+
+function displayDiscussTable(){
+    if($_SESSION['memberID']>0) echo "<div style='text-align:right;margin-right:5px;'><button class='btn btn-lg  btn-primary text-center' onClick='goDiscussCreateForm()'>新增話題</button></div><p style='font-size:0px'><br></p>";
+    else echo "<br><br>";
+    echo "<table class='roundedCorners'><tr><th>主題</th><th>種類</th><th>發布日期</th><th>發布人</th></tr>";
+    $conn=new mysqli($GLOBALS['serverName'], $GLOBALS['username'], $GLOBALS['password'],$GLOBALS['dbName']);
+    $array=[];
+    $discussPage=$_COOKIE['discussPage'];
+    if($conn){
+        mysqli_set_charset($conn,"utf8");
+        $sql="SELECT * FROM discuss,member WHERE member.memberID=discuss.memberID;";
+
+        $result=$conn->query($sql);
+        if($result->num_rows>0){
+            while($discuss=$result->fetch_assoc()){
+                 $array[]=$discuss;                                                
+            }
+        }
+        for($i=$result->num_rows-1-($discussPage-1)*7;$i>=0&&$i>=($result->num_rows-($discussPage-1)*7-7);$i--){                            
+            echo "<tr><td><a onClick='goDiscussForm({$array[$i]['discussID']})' href='discussForm.php'>{$array[$i]['title']}</a></td><td style='font-size:120%'>{$array[$i]['discussclass']}</td><td style='font-size:120%'>{$array[$i]['releaseTime']}</td><td style='font-size:120%'>{$array[$i]['name']}</td></tr>";         
+        }     
+    }    
+        echo "</table> ";
+        $conn->close();      
+    }
+
+ function displayDiscussPageNumbers(){
+        $discussPage=$_COOKIE['discussPage']==null? 1:$_COOKIE['discussPage'] ;
+        $lastPage=$discussPage-1>0? $discussPage-1:1;    
+        echo " <div id='discussPage'>"             ;
+        echo "<div class='text-center'><ul class='pagination'>";
+        echo "<li><a style='cursor: pointer;'onClick='goDiscuss({$lastPage})'>&laquo;</a></li>";
+        $conn=new mysqli($GLOBALS['serverName'], $GLOBALS['username'], $GLOBALS['password'],$GLOBALS['dbName']);     
+        if($conn){
+            mysqli_set_charset($conn,"utf8");
+            $sql="SELECT * FROM discuss;";
+            $result=$conn->query($sql);
+            if($result->num_rows>0){
+                for($i=1;$i<=($result->num_rows-1)/7+1;$i++){
+                    $page="discussPage".$i;
+                    $func="goDiscuss(".$i.")";
+                    if ($discussPage==$i)                              {
+                        echo "<li id='{$page}' class='active'><a style='cursor: pointer;' onClick='{$func}'>{$i}</a></li>";
+                    }else{
+                        echo "<li id='{$page}'><a style='cursor: pointer;' onClick='{$func}'>{$i}</a></li>";
+                    }                              
+                }
+                $nextPage=$discussPage+1>$result->num_rows/7+1? $discussPage:$discussPage+1;
+                echo "<li><a style='cursor: pointer;' onClick='goDiscuss({$nextPage})'>&raquo;</a></li>";
+                echo "</ul>";
+        }          
+    }
+    echo "</div>";
+    $conn->close();
+}
+
+function displayDiscussContent(){
+    $discussID=$_COOKIE['discussID'];
+    $conn=new mysqli($GLOBALS['serverName'], $GLOBALS['username'], $GLOBALS['password'],$GLOBALS['dbName']);
+    if($conn){
+        mysqli_set_charset($conn,"utf8");
+        //$sql="SELECT * FROM discuss WHERE discussID= '{$discussID}';";
+        $sql="SELECT * FROM discuss,member WHERE member.memberID=discuss.memberID AND discussID= '{$discussID}';";
+        $result=$conn->query($sql);
+        if($result->num_rows>0){
+            $discuss=$result->fetch_assoc();
+
+            
+            
+            echo "<br><h4>{$discuss['title']}</h4></br>";
+            
+            echo "<div style='margin-left:20px;margin-right:20px'><pre>{$discuss['content']}</br><div></div></pre>";
+            echo "<div><a href='discuss.php'>回上一頁</a>";
+            echo "</div><br><br>";
+                $result=$conn->query($sql);
+            echo "</div>";
+        }                       
+    }
+    $conn->close();      
+}
+
+function displayMessageTool(){
+    echo "<div class='row'><div class='col-md-12'><form action='action.php' method='post'>";
+    echo "<textarea required name='content' placeholder='請輸入留言' rows=5 style='width:100%'></textarea>";
+    echo "<div class=text-right><button onclick='createDiscussMessage()' class='btn btn-lg btn-primary'>送出</button>";
+    echo " <button class='btn btn-lg btn-warning'>重設</button>";
+    echo "</div>";
+    echo "<form></div></div>";
+}
+
+function displayMessages(){
+      $conn=new mysqli($GLOBALS['serverName'], $GLOBALS['username'], $GLOBALS['password'],$GLOBALS['dbName']);  
+      if($conn){
+           mysqli_set_charset($conn,"utf8");
+           $sql="SELECT * FROM discussmessage WHERE discussID={$_COOKIE['discussID']};";
+           $result=$conn->query($sql);
+           if($result->num_rows==0) return;
+           echo "<div id='menu'><p style='text-align:center;font-size:200%;color:black;font-weight: bold;font-family: '微軟正黑體';'>留言區</p> </div>";
+          echo "<div id='messages' style='margin-top:20px;;margin-left:60px;margin-right:60px'>";
+           while($row=$result->fetch_assoc()){
+               $sql="SELECT * FROM member WHERE memberID={$row['memberID']};";
+               $result2=$conn->query($sql);
+               $member=$result2->fetch_assoc();
+               echo "<div class='row'><div class='col-md-3'><img style='width:100%;height:120px;margin-top:10px;' src={$member['picture']}></img>";
+               echo "<p style='text-align:center;'>{$member['name']}</p></div>";
+               echo "<div class='col-md-9'><textarea readonly style='width:100%;height:150px;font-size:20px;background:white;'>{$row['content']}</textarea>";
+               echo "</div></div><hr>";
+           }
+         echo "</div>";
+      }
+       $conn->close();  
+}
+
+function createDiscussmessage(){
+   $conn=new mysqli($GLOBALS['serverName'], $GLOBALS['username'], $GLOBALS['password'],$GLOBALS['dbName']);  
+    
+    $content=$_POST['content'];
+    $memberID=$_SESSION['memberID'];
+
+    if($conn){
+        mysqli_set_charset($conn,"utf8");
+        $sql="INSERT INTO discussmessage(messageID,memberID,discussID,content,releaseTime) VALUES ('','{$memberID}','{$_COOKIE['discussID']}','{$content}','');";
+        $result=$conn->query($sql);
+        if ($result){
+             echo "<script>alert('留言成功');window.location = '/discussForm.php';</script>";
+        }
+    }  
+    $conn->close();
+}
 ?>

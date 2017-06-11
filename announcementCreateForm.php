@@ -74,14 +74,46 @@
              
              <div class="col-md-9">    
                  <div id="divright">                           
-                     <div id="menu">
-                        <p style="text-align:center;font-size:200%;color:black;font-weight: bold;font-family: '微軟正黑體';">學校公告</p>
-                      </div>             
-                     <div style="margin-left:20px;margin-right:20px">
-                        <div id="announcementTable">
-                            <script>goAnnouncement(1)</script>
-                         </div>                                               
-                      </div>            
+                    <div id="menu">
+                        <p style="text-align:center;font-size:200%;color:black;font-weight: bold;font-family: '微軟正黑體';">公告新增</p>
+                     </div>
+                    <div class='row'>   
+                        <div class="col-md-10 col-md-offset-1">
+                            <br><br>
+                            <form class="form-horizontal" name="createAnnouncementFrom" action="action.php" method="get"><!---->
+                                <div class='row'>
+                                    <div class='col-md-8'>
+                                        <label for='title' >公告標題： </label>
+                                        <input required type='text' name='title' size=22 placeholder="請填寫公告標題"><br><br>                                                   
+                                     </div>
+                                    <div class='col-md-4'>
+                                        <label for='class'>公告種類：</label>
+                                        <select name='class'>
+                                            <option value="註冊組">註冊組</option>
+                                            <option value="總務處">總務處</option>
+                                            <option value="學生議會">學生議會</option>
+                                            <option value="電算中心">電算中心</option>
+                                         </select><br><br>             
+                                     </div>
+                                 </div> 
+                                                   
+                                <div class='row'>
+                                    <div class='col-md-12'>                           
+                                        <label for="content">公告內容描述：</label>
+                                        <textarea required  type="text" placeholder="請填寫公告內容" name="content" rows="6" cols="53"  Wrap='Soft'></textarea>          
+                                        <div class="display:inline">  
+                                            &nbsp;&nbsp;
+                                            <button class="btn btn-lg  btn-primary text-center"  type="submit" name="submit" onClick="createAnnouncement()">新增公告</button><!---->
+                                            <button class="btn btn-lg  btn-warning text-center"  type="reset" name="reset">清除全部</button>
+                                            <button class="btn btn-lg  btn-danger text-center" onClick="location.href='index.php'">取消新增</button>
+                                            <br><br>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </form>
+                        
+                         </div>          
+                     </div>
                   </div>
                  
                  <div id="divright" style="margin-top:5px;" >
@@ -123,7 +155,7 @@
                      </div>
                    </div>   
               </div>     
-              </div>    
+               
          </div>    
      </div>
     <div id="footer">

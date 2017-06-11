@@ -1,11 +1,8 @@
 <?php  include("function.php");
     session_start();
      if(!isset($_SESSION['memberID'])){
-        $_SESSION['memberID']=0;
-     }   
-     if($_SESSION['memberID']==0){
-         echo "<script>alert('非會員無法瀏覽詳細會員資料！');history.go(-1);</script>";
-     }
+        $_SESSION['memberID']=0;   
+     } 
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,15 +14,11 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
         crossorigin="anonymous">
     <link rel=stylesheet type="text/css" href="/css/HomepageStyle.css">
+    <link rel=stylesheet type="text/css" href="/css/slideshowStyle.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
     <script src=/js/function.js></script>
-    <style>
-        #divright input,textarea{
-            background-color:white;
-        }
-    </style>
 </head>
 <body>
     <div id="divheader">
@@ -47,16 +40,16 @@
                    <div id="menu">
                         <p>主選單</p>
                     </div>
-                    <ul>   
+                    <ul>
                         <li>
                             <p><a href="index.php">學校公告</a></p>
                         </li>
-                         <?php
+                        <?php
                            leftMenuAuthorityCheck1();
                         ?> 
                         <li>
                             <p><a href="classIntroduction.php">班級介紹</a></p>
-                        </li>
+                        </li>                
                         <?php
                            leftMenuAuthorityCheck2();
                         ?>                   
@@ -68,29 +61,46 @@
                         ?>   
                     </ul>
                  </div>
+                 <br><br>
                  <div id="divleft">
                     <div id="menu">
                         <p>本月壽星</p>
-                    </div>                 
+                    </div>       
                     <div id="theMonthBirthdayID">                          
                           <script>changeTheMonthBirthdayList(-1);</script>  
-                    </div>            
+                    </div>                                    
                 </div>               
              </div>
-              <div class="col-md-9">    
+             
+            <div class="col-md-9">    
                  <div id="divright">
-                    <div id="menu">
-                     <p style="text-align:center;font-size:200%;color:black;font-weight: bold;font-family: '微軟正黑體';">個人資料</p>
+                             
+                     <div id="menu">
+                     <p style="text-align:center;font-size:200%;color:black;font-weight: bold;font-family: '微軟正黑體';">相簿</p>
                     </div>
-                    <div style="margin-left:80px;margin-right:80px"><br/><br/>         
-                            <?php
-                                 displayMemberData();
-                            ?>          
+               
+                <div style="margin-left:40px;margin-right:40px">
+                <div style='text-align:right;margin-top:20px;margin-bottom:-10px;'>
+                <button onclick="goUrl('createVideo.php')" class='btn btn-lg btn-primary' >新增影片</button>  </div><hr/>
+                <div style='text-align:center'>
+                <?php displayVideo() ?>
+                                
+               
+                </div>
+                   
                     
-                </div> </div>  
-              
+                </div>            
+                </div>
+                
+                 
+                   
+            </div>
+
+
+                </div>     
+             </div>    
         </div>    
-    </div></div>
+    </div>
     <div id="footer">
         <p> © Copyright Group5</p>
     </div>

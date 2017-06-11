@@ -1,8 +1,8 @@
 <?php  include("function.php");
-    session_start();
+     session_start();
      if(!isset($_SESSION['memberID'])){
         $_SESSION['memberID']=0;   
-     }
+     } 
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -75,12 +75,33 @@
              <div class="col-md-9">    
                  <div id="divright">                           
                      <div id="menu">
-                        <p style="text-align:center;font-size:200%;color:black;font-weight: bold;font-family: '微軟正黑體';">學校公告</p>
+                        <p style="text-align:center;font-size:200%;color:black;font-weight: bold;font-family: '微軟正黑體';">站外連結</p>
                       </div>             
                      <div style="margin-left:20px;margin-right:20px">
-                        <div id="announcementTable">
-                            <script>goAnnouncement(1)</script>
-                         </div>                                               
+                         <br><br> 
+                         
+                            <div class="list-group" >
+                                <a href="#" class="list-group-item active" style="background-color: #FFCCCC;border: 1px solid #EE7700;">
+                                    <p1 style="font-weight: bold"><font color="#000000"> 連結項目 </font></p1>
+                                 </a>
+                                <a href="http://www.ntust.edu.tw/home.php" target="_blank" class="list-group-item "style="background-color: #E0FFFF;border: 1px solid #EE7700;">
+                                     <p1><font color="#0044BB"> 台灣科技大學 </font></p1>
+                                </a>
+                                <a href="http://moodle.ntust.edu.tw/" target="_blank" class="list-group-item "style="background-color: #E0FFFF;border: 1px solid #EE7700;">
+                                    <p1><font color="#0044BB"> 台灣科技大學數位學習平台 MOODLE </font></p1>
+                                </a>
+                                <a href="https://login.ntust.edu.tw/login.aspx?uri=https%3a%2f%2fmail.ntust.edu.tw%2f" target="_blank" class="list-group-item "style="background-color: #E0FFFF;border: 1px solid #EE7700;">
+                                     <p1><font color="#0044BB"> 台灣科技大學電子郵件認證系統 </font></p1>
+                                </a>
+                                <a href="http://www.cs.ntust.edu.tw/page/content/29" target="_blank" class="list-group-item "style="background-color: #E0FFFF;border: 1px solid #EE7700;">
+                                     <p1><font color="#0044BB"> 台灣科技大學資訊管理系 </font></p1>
+                                </a>
+                                <a href="https://www.facebook.com/groups/109194055771746" target="_blank" class="list-group-item "style="background-color: #E0FFFF;border: 1px solid #EE7700;">
+                                     <p1><font color="#0044BB"> 資管系友會 </font></p1>
+                                </a>
+                            </div>
+                         
+                          <br><br>                                              
                       </div>            
                   </div>
                  

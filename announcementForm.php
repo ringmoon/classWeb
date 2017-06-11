@@ -74,14 +74,12 @@
              
              <div class="col-md-9">    
                  <div id="divright">                           
-                     <div id="menu">
-                        <p style="text-align:center;font-size:200%;color:black;font-weight: bold;font-family: '微軟正黑體';">學校公告</p>
-                      </div>             
-                     <div style="margin-left:20px;margin-right:20px">
-                        <div id="announcementTable">
-                            <script>goAnnouncement(1)</script>
-                         </div>                                               
-                      </div>            
+                    <div id="menu">
+                        <p style="text-align:center;font-size:200%;color:black;font-weight: bold;font-family: '微軟正黑體';">公告內容</p>
+                     </div>  
+                    <?php
+                        displayAnnouncementContent();           
+                     ?>           
                   </div>
                  
                  <div id="divright" style="margin-top:5px;" >
